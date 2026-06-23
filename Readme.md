@@ -1,1 +1,1 @@
-This is a Hospital Management System.
+This is Hospital management System
