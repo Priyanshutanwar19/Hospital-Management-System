@@ -1,11 +1,16 @@
-const express = require("express");
-const app = express();
-const PORT=5000;
+const path = require("path");
+const dotenv = require("dotenv");
+const connectDB = require("./src/config/db");
+const createApp = require("./src/app");
 
-app.get("/", (req, res) => {
-  res.send("Hospital Management System API");
-});
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+connectDB();
+
+const app = createApp();
+
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`SmartCare Hospital Management System API running on port ${PORT}`);
 });
