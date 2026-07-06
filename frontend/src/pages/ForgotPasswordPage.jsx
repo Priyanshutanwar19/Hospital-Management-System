@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import authService from '../services/authService';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -10,65 +12,64 @@ const ForgotPasswordPage = () => {
     setStatus('loading');
     try {
       await authService.forgotPassword({ email });
-      alert('Password reset email sent');
+      toast.success('Password reset email sent! Check your inbox/console.');
       setStatus('succeeded');
     } catch (error) {
-      alert(error.response?.data?.message || 'Failed to send email');
+      toast.error(error.response?.data?.message || 'Failed to send email');
       setStatus('failed');
     }
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#f1f5f9',
-      padding: '24px'
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '28rem',
-        borderRadius: '24px',
-        background: 'white',
-        padding: '32px',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '24px' }}>
-          Forgot Password
-        </h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            placeholder="Email"
-            required
-            style={{
-              width: '100%',
-              borderRadius: '16px',
-              border: '1px solid #cbd5e1',
-              padding: '12px 16px',
-              fontSize: '16px'
-            }}
-          />
+    <div className="min-h-screen bg-gradient-to-tr from-[#f4faf7] via-white to-[#fafdfc] flex items-center justify-center p-6 font-sans relative overflow-hidden">
+      
+      {/* Decorative background blobs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-emerald-50/40 blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] rounded-full bg-teal-50/50 blur-3xl pointer-events-none"></div>
+
+      <div className="w-full max-w-md rounded-3xl bg-white border border-emerald-100/80 p-8 shadow-xl shadow-emerald-600/5 backdrop-blur-sm relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex w-11 h-11 rounded-xl bg-indigo-600 items-center justify-center font-bold text-white shadow-md shadow-indigo-600/30 text-xl mb-4">
+            S
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Forgot Password</h2>
+          <p className="text-sm text-slate-500 mt-1">We will send you a password recovery link</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+              Email Address
+            </label>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder="user@example.com"
+              required
+              className="w-full rounded-2xl bg-[#fafcfb] border border-emerald-100 text-slate-800 placeholder-slate-400 px-4 py-3.5 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-650 focus:outline-none transition-all text-sm"
+            />
+          </div>
+
           <button
             type="submit"
-            style={{
-              borderRadius: '16px',
-              background: '#0f172a',
-              color: 'white',
-              padding: '12px 16px',
-              fontWeight: '600',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '16px'
-            }}
+            disabled={status === 'loading'}
+            className="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-700 transition-all font-bold text-white py-3.5 shadow-md shadow-indigo-600/20 text-sm hover:-translate-y-0.5 active:translate-y-0 duration-200 disabled:opacity-50"
           >
-            {status === 'loading' ? 'Sending...' : 'Send reset link'}
+            {status === 'loading' ? 'Sending link...' : 'Send Reset Link'}
           </button>
         </form>
+
+        {/* Footnote */}
+        <div className="mt-8 text-center text-xs text-slate-500">
+          Back to{' '}
+          <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+            Login
+          </Link>
+        </div>
+
       </div>
     </div>
   );
