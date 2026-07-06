@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.use(authenticate);
 
-router.get("/", authorize("admin", "receptionist"), doctorController.getDoctors);
-router.get("/:id", authorize("admin", "doctor", "receptionist"), doctorController.getDoctorById);
+router.get("/", authorize("admin", "receptionist", "patient"), doctorController.getDoctors);
+router.get("/:id", authorize("admin", "doctor", "receptionist", "patient"), doctorController.getDoctorById);
 router.post("/", authorize("admin"), doctorController.createDoctor);
 router.put("/:id", authorize("admin", "doctor"), doctorController.updateDoctor);
 router.delete("/:id", authorize("admin"), doctorController.deleteDoctor);

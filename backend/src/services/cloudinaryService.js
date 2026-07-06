@@ -6,11 +6,38 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadImage = async (filePath) => {
-  const result = await cloudinary.uploader.upload(filePath, {
-    folder: "smartcare-hospital",
+const uploadImage = async (fileInput) => {
+  if (
+    !process.env.CLOUDINARY_CLOUD_NAME || 
+    process.env.CLOUDINARY_CLOUD_NAME === "demo" || 
+    !process.env.CLOUDINARY_API_KEY || 
+    process.env.CLOUDINARY_API_KEY === "demo_key"
+  ) {
+    console.log("Cloudinary running in sandbox mock mode - returning mock PDF attachment URL");
+    return "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+  }
+
+  return new Promise((resolve, reject) => {
+    if (Buffer.isBuffer(fileInput)) {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "smartcare-hospital", resource_type: "auto" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
+      uploadStream.end(fileInput);
+    } else {
+      cloudinary.uploader.upload(
+        fileInput,
+        { folder: "smartcare-hospital", resource_type: "auto" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
+    }
   });
-  return result.secure_url;
 };
 
 module.exports = { uploadImage };

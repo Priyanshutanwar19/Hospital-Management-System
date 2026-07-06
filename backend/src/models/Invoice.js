@@ -8,6 +8,9 @@ const invoiceSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     status: { type: String, enum: Object.values(INVOICE), default: INVOICE.UNPAID },
     dueDate: { type: Date },
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
   },
   { timestamps: true }
 );

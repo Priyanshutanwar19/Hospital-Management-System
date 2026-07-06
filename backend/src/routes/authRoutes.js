@@ -2,6 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 const authController = require("../controllers/authController");
 const validateRequest = require("../middleware/validateRequest");
+const authenticate = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -19,9 +20,21 @@ router.post(
 
 router.post(
   "/login",
-  [body("email").isEmail(), body("password").notEmpty()],
+  [
+    body("email").isEmail().withMessage("Valid email is required"),
+    body("password").notEmpty().withMessage("Password is required")
+  ],
   validateRequest,
   authController.login
+);
+
+router.post(
+  "/google",
+  [
+    body("idToken").notEmpty().withMessage("idToken is required")
+  ],
+  validateRequest,
+  authController.googleLogin
 );
 
 router.post(
@@ -50,12 +63,16 @@ router.post(
 
 router.post(
   "/change-password",
-  [body("oldPassword").notEmpty(), body("newPassword").isLength({ min: 6 })],
+  authenticate,
+  [
+    body("oldPassword").notEmpty().withMessage("Old password is required"),
+    body("newPassword").isLength({ min: 6 }).withMessage("New password must be at least 6 characters")
+  ],
   validateRequest,
   authController.changePassword
 );
 
-router.get("/current", authController.currentUser);
+router.get("/current", authenticate, authController.currentUser);
 router.post("/logout", authController.logout);
 
 module.exports = router;
