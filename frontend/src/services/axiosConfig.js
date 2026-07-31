@@ -32,10 +32,10 @@ api.interceptors.response.use(
       try {
         const { default: store } = await import('../app/store');
         const { setCredentials, logout } = await import('../features/auth/authSlice');
-        
+
         const refreshToken = store.getState().auth.refreshToken;
         const response = await api.post('/auth/refresh-token', { refreshToken });
-        
+
         store.dispatch(
           setCredentials({
             user: store.getState().auth.user,
